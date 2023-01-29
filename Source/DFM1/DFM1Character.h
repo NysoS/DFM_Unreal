@@ -41,6 +41,8 @@ class ADFM1Character : public ACharacter
 
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	float CameraDistance = 600.f;
+
+	class ULifeComponent* LifeComponent = nullptr;
 	
 public:
 	ADFM1Character();
@@ -60,6 +62,8 @@ protected:
 	virtual void BeginPlay();
 
 	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void FellOutOfWorld(const UDamageType& dmgType) override;
 
 public:
 	/** Returns CameraBoom subobject **/
