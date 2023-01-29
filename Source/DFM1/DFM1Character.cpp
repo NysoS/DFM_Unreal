@@ -66,13 +66,14 @@ void ADFM1Character::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-
 	
 	LifeComponent = FindComponentByClass<ULifeComponent>();
 	if(!LifeComponent)
 	{
 		UE_LOG(LogTemp, Error, TEXT("Not found"));
 	}
+
+	StartPosition = GetActorLocation();
 }
 
 void ADFM1Character::Tick(float DeltaSeconds)
@@ -83,7 +84,7 @@ void ADFM1Character::Tick(float DeltaSeconds)
 
 void ADFM1Character::FellOutOfWorld(const UDamageType& dmgType)
 {
-	Super::FellOutOfWorld(dmgType);
+	//Super::FellOutOfWorld(dmgType);
 
 	if(!LifeComponent) return;
 
@@ -92,6 +93,8 @@ void ADFM1Character::FellOutOfWorld(const UDamageType& dmgType)
 	UE_LOG(LogTemp, Warning, TEXT("Falling"));
 
 	UE_LOG(LogTemp, Warning, TEXT("Life remaining %d"),LifeComponent->GetLife());
+
+	SetActorLocation(StartPosition);
 }
 
 //////////////////////////////////////////////////////////////////////////

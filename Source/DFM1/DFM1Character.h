@@ -43,6 +43,8 @@ class ADFM1Character : public ACharacter
 	float CameraDistance = 600.f;
 
 	class ULifeComponent* LifeComponent = nullptr;
+
+	FVector StartPosition;
 	
 public:
 	ADFM1Character();
