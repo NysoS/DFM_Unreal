@@ -48,5 +48,5 @@ void ULifeComponent::OntakeDamage()
 		Life = 0;
 		UE_LOG(LogTemp, Warning, TEXT("Dead"));
 	}
-	//DelegateTakeDamage.Broadcast();
+	DelegateTakeDamage.Broadcast(Life);
 }
