@@ -9,6 +9,7 @@
 #include "GameFramework/SpringArmComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "LifeComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -65,12 +66,35 @@ void ADFM1Character::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
+	
+	LifeComponent = FindComponentByClass<ULifeComponent>();
+	if(!LifeComponent)
+	{
+		UE_LOG(LogTemp, Error, TEXT("Not found"));
+	}
+
+	StartPosition = GetActorLocation();
 }
 
 void ADFM1Character::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
 	CameraBoom->TargetArmLength = (CameraOffset.Z - GetActorLocation().Z) + CameraDistance;
+}
+
+void ADFM1Character::FellOutOfWorld(const UDamageType& dmgType)
+{
+	//Super::FellOutOfWorld(dmgType);
+
+	if(!LifeComponent) return;
+
+	LifeComponent->OntakeDamage();
+	
+	UE_LOG(LogTemp, Warning, TEXT("Falling"));
+
+	UE_LOG(LogTemp, Warning, TEXT("Life remaining %d"),LifeComponent->GetLife());
+
+	SetActorLocation(StartPosition);
 }
 
 //////////////////////////////////////////////////////////////////////////
