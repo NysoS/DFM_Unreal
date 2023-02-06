@@ -2,6 +2,7 @@
 
 
 #include "LifeComponent.h"
+
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
@@ -41,13 +42,15 @@ int32 ULifeComponent::GetLife()
 	return Life;
 }
 
+/**
+ * Invoke l'evenement 'DelegateTakeDamage' en passant en parametre le nombre de vie restant 
+ */
 void ULifeComponent::OntakeDamage()
 {
 	Life--;
 	if(Life <= 0 )
 	{
 		Life = 0;
-		UE_LOG(LogTemp, Warning, TEXT("Dead"));
 		UGameplayStatics::OpenLevel(GetWorld(),FName(*GetWorld()->GetName()));
 	}
 	DelegateTakeDamage.Broadcast(Life);

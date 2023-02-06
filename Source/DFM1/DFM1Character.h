@@ -48,8 +48,9 @@ class ADFM1Character : public ACharacter
 	
 public:
 	ADFM1Character();
-	
 
+	void Trapped();
+	
 protected:
 
 	/** Called for movement input */
@@ -66,6 +67,8 @@ protected:
 	virtual void Tick(float DeltaSeconds) override;
 
 	virtual void FellOutOfWorld(const UDamageType& dmgType) override;
+
+	void ResetSpawn();
 
 public:
 	/** Returns CameraBoom subobject **/

@@ -4,7 +4,6 @@
 #include "BasicTrap.h"
 
 #include "DFM1Character.h"
-#include "LifeComponent.h"
 #include "GameFramework/Actor.h"
 
 #include "Components/BoxComponent.h"
@@ -38,17 +37,19 @@ void ABasicTrap::Tick(float DeltaTime)
 
 }
 
+/**
+ *	Récupère l'acteur qui passe a travers lui,
+ *	Doit avoir 'Generate Overlap Event' activé pour fonctionner
+ */
 void ABasicTrap::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if(!OtherActor) return;
 
-	if(OtherActor->FindComponentByClass<ULifeComponent>())
+	if(Cast<ACharacter>(OtherActor))
 	{
-		ULifeComponent* CharacterLifeComponent = OtherActor->FindComponentByClass<ULifeComponent>();
-		CharacterLifeComponent->OntakeDamage();
+		ADFM1Character* Character = Cast<ADFM1Character>(OtherActor);
+		Character->Trapped();
 	}
-
-	UE_LOG(LogTemp, Warning, TEXT("Actor Overlap %s") ,*OtherActor->GetName());
 }
 

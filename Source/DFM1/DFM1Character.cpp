@@ -70,7 +70,7 @@ void ADFM1Character::BeginPlay()
 	LifeComponent = FindComponentByClass<ULifeComponent>();
 	if(!LifeComponent)
 	{
-		UE_LOG(LogTemp, Error, TEXT("Not found"));
+		UE_LOG(LogTemp, Error, TEXT("Life Component Not found"));
 	}
 
 	StartPosition = GetActorLocation();
@@ -82,20 +82,25 @@ void ADFM1Character::Tick(float DeltaSeconds)
 	CameraBoom->TargetArmLength = (CameraOffset.Z - GetActorLocation().Z) + CameraDistance;
 }
 
+void ADFM1Character::ResetSpawn()
+{
+	SetActorLocation(StartPosition);
+}
+
 void ADFM1Character::FellOutOfWorld(const UDamageType& dmgType)
 {
-	//Super::FellOutOfWorld(dmgType);
+	Trapped();
+}
 
+void ADFM1Character::Trapped()
+{
 	if(!LifeComponent) return;
 
 	LifeComponent->OntakeDamage();
-	
-	UE_LOG(LogTemp, Warning, TEXT("Falling"));
 
-	UE_LOG(LogTemp, Warning, TEXT("Life remaining %d"),LifeComponent->GetLife());
-
-	SetActorLocation(StartPosition);
+	ResetSpawn();
 }
+
 
 //////////////////////////////////////////////////////////////////////////
 // Input
