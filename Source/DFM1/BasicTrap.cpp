@@ -49,6 +49,7 @@ void ABasicTrap::NotifyActorBeginOverlap(AActor* OtherActor)
 	if(Cast<ACharacter>(OtherActor))
 	{
 		ADFM1Character* Character = Cast<ADFM1Character>(OtherActor);
+		if(!Character) return;
 		Character->Trapped();
 	}
 }
