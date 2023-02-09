@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "Collectible.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FMulticastDelegateTakeCollectible, int32, NbCollectibe);
+
 UCLASS()
 class DFM1_API ACollectible : public AActor
 {
@@ -33,5 +35,9 @@ private:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	virtual void NotifyActorBeginOverlap (AActor * OtherActor);
+
+	UPROPERTY(BlueprintAssignable, Category = "Custom Delegate")
+	FMulticastDelegateTakeCollectible DelegateTakeCollectible;
 	
 };

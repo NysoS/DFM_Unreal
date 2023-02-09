@@ -3,6 +3,7 @@
 
 #include "Collectible.h"
 
+#include "DFM1Character.h"
 #include "Components/SphereComponent.h"
 #include "GameFramework/RotatingMovementComponent.h"
 
@@ -36,3 +37,16 @@ void ACollectible::Tick(float DeltaTime)
 
 }
 
+void ACollectible::NotifyActorBeginOverlap(AActor* OtherActor)
+{
+	Super::NotifyActorBeginOverlap(OtherActor);
+
+	if(Cast<ADFM1Character>(OtherActor))
+	{
+		ADFM1Character* Character = Cast<ADFM1Character>(OtherActor);
+		if(!Character) return;
+		Character->AddCollectible(1);
+		DelegateTakeCollectible.Broadcast(1);
+		Destroy();
+	}
+}

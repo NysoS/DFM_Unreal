@@ -45,6 +45,9 @@ class ADFM1Character : public ACharacter
 	class ULifeComponent* LifeComponent = nullptr;
 
 	FVector StartPosition;
+
+	UPROPERTY(EditAnywhere, Category = "Collectible");
+	int32 NbCollectible = 0;
 	
 public:
 	ADFM1Character();
@@ -68,12 +71,15 @@ protected:
 
 	virtual void FellOutOfWorld(const UDamageType& dmgType) override;
 
-	void ResetSpawn();
-
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	void ResetSpawn();
+
+	void AddCollectible(int32 nbCollectible);
+	void RemoveCollectible(int32 nbCollectible);
 };
 
