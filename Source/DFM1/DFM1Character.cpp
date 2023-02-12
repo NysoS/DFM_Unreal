@@ -101,6 +101,11 @@ void ADFM1Character::RemoveCollectible(int32 nbCollectible)
 	}
 }
 
+int32 ADFM1Character::GetCountCollectible() const
+{
+	return NbCollectible;
+}
+
 void ADFM1Character::FellOutOfWorld(const UDamageType& dmgType)
 {
 	Trapped();

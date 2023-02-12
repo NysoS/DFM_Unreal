@@ -45,9 +45,17 @@ void AEndingZone::NotifyActorBeginOverlap(AActor* OtherActor)
 {
 	Super::NotifyActorBeginOverlap(OtherActor);
 	
-	if(ADFM1Character* Character = Cast<ADFM1Character>(OtherActor))
+	if(const ADFM1Character* Character = Cast<ADFM1Character>(OtherActor))
 	{
-		UE_LOG(LogTemp, Warning, TEXT("ENDING ZONE TRIGGER"));	
+		UE_LOG(LogTemp, Warning, TEXT("ENDING ZONE TRIGGER WITH %d coins"), Character->GetCountCollectible());
+
+		if(Character->GetCountCollectible() == TotalCoinsToUnlock)
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Congratulation you have finish this game!!"));
+		}else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Sorry bro, you don't have enough coins!! Come back later"));
+		}
 	}
 }
 
