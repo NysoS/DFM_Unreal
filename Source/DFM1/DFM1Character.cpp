@@ -87,6 +87,20 @@ void ADFM1Character::ResetSpawn()
 	SetActorLocation(StartPosition);
 }
 
+void ADFM1Character::AddCollectible(int32 nbCollectible)
+{
+	NbCollectible += nbCollectible;
+}
+
+void ADFM1Character::RemoveCollectible(int32 nbCollectible)
+{
+	NbCollectible -= nbCollectible;
+	if(NbCollectible <= 0)
+	{
+		NbCollectible = 0;
+	}
+}
+
 void ADFM1Character::FellOutOfWorld(const UDamageType& dmgType)
 {
 	Trapped();
