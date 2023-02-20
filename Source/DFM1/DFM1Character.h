@@ -81,5 +81,6 @@ public:
 
 	void AddCollectible(int32 nbCollectible);
 	void RemoveCollectible(int32 nbCollectible);
+	int32 GetCountCollectible() const;
 };
 
