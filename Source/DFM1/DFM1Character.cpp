@@ -1,6 +1,8 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DFM1Character.h"
+
+#include "DashComponent.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
@@ -70,9 +72,17 @@ void ADFM1Character::BeginPlay()
 	LifeComponent = FindComponentByClass<ULifeComponent>();
 	if(!LifeComponent)
 	{
+		delete LifeComponent;
 		UE_LOG(LogTemp, Error, TEXT("Life Component Not found"));
 	}
 
+	DashComponent = FindComponentByClass<UDashComponent>();
+	if(!DashComponent)
+	{
+		delete DashComponent;
+		UE_LOG(LogTemp, Error, TEXT("Dash Component Not found"));
+	}
+	
 	StartPosition = GetActorLocation();
 }
 
@@ -130,6 +140,9 @@ void ADFM1Character::SetupPlayerInputComponent(class UInputComponent* PlayerInpu
 	if (UEnhancedInputComponent* EnhancedInputComponent = CastChecked<UEnhancedInputComponent>(PlayerInputComponent)) {
 		//Moving
 		EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ADFM1Character::Move);
+		//Dash
+		EnhancedInputComponent->BindAction(DashLeftAction, ETriggerEvent::Triggered, this, &ADFM1Character::LeftDash);
+		EnhancedInputComponent->BindAction(DashRightAction, ETriggerEvent::Triggered, this, &ADFM1Character::RightDash);
 	}
 
 }
@@ -158,6 +171,14 @@ void ADFM1Character::Move(const FInputActionValue& Value)
 	}
 }
 
+void ADFM1Character::LeftDash()
+{
+	if(!DashComponent) return;
+	bool isDashing = DashComponent->CanDash();
+}
 
-
-
+void ADFM1Character::RightDash()
+{
+	if(!DashComponent) return;
+	bool isDashing = DashComponent->CanDash();
+}

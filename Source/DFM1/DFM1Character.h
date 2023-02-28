@@ -25,9 +25,11 @@ class ADFM1Character : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
-	/** Jump Input Action */
+	/** Dash Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpAction;
+	class UInputAction* DashLeftAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* DashRightAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -42,8 +44,13 @@ class ADFM1Character : public ACharacter
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	float CameraDistance = 600.f;
 
-	class ULifeComponent* LifeComponent = nullptr;
+	class ULifeComponent* LifeComponent;
 
+	class UDashComponent* DashComponent;
+
+	void LeftDash();
+	void RightDash();
+	
 	FVector StartPosition;
 
 	UPROPERTY(EditAnywhere, Category = "Collectible");
