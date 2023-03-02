@@ -39,10 +39,6 @@ void UDashComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		{
 			bDashing = false;
 			Time = 0;
-			if(UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(GetOwner()->GetComponentByClass(UCharacterMovementComponent::StaticClass())))
-			{
-				CMC->SetMovementMode(EMovementMode::MOVE_Walking);
-			}
 		}
 	}
 }
@@ -60,7 +56,7 @@ bool UDashComponent::CanDash()
 	
 	FVector NewPos = Center + GetOwner()->GetActorForwardVector();
 	float DistanceBetweenIteration = Distance/5;
-	for(int32 i = 0; i < nbSphere; ++i)
+	for(int32 i = 0; i <= nbSphere; i++)
 	{
 		FHitResult Result;
 		UKismetSystemLibrary::SphereTraceSingle(GetWorld(),NewPos,NewPos,25.f,ETraceTypeQuery::TraceTypeQuery1,false,IgnoreActors,EDrawDebugTrace::ForDuration,Result,true,FLinearColor::Red,FLinearColor::Blue,5);
@@ -79,10 +75,6 @@ void UDashComponent::DashMoving()
 	if(CanDash())
 	{
 		ActorLocation = GetOwner()->GetActorLocation();
-		if(UCharacterMovementComponent* CMC = Cast<UCharacterMovementComponent>(GetOwner()->GetComponentByClass(UCharacterMovementComponent::StaticClass())))
-		{
-			CMC->SetMovementMode(EMovementMode::MOVE_Custom);
-		}
 		bDashing = true;
 	}
 }
