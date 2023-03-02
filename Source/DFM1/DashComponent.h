@@ -15,16 +15,22 @@ class DFM1_API UDashComponent : public UActorComponent
 public:	
 	// Sets default values for this component's properties
 	UDashComponent();
-	bool CanDash();
 
+	bool bDashing;
+	FVector ActorLocation;
+	
+	void DashMoving();
+	bool IsDashing();
+	
 private:
 	UPROPERTY(EditAnywhere, Category = "Dash Parameter")
-	int32 Distance = 10;
+	float Distance = 250.f;
 
-	UPROPERTY(EditAnywhere, Category = "Dash Parameter")
+	UPROPERTY(EditAnywhere, Category = "Dash Parameter", meta = (ClampMin = 0.1f, ClampMax = 1.0f, UIMin = 0.1f, UIMax = 1.0f))
 	float TimeToDash;
+	float Time;
 
-	
+	bool CanDash();
 	
 protected:
 	// Called when the game starts

@@ -153,6 +153,9 @@ void ADFM1Character::Move(const FInputActionValue& Value)
 	// input is a Vector2D
 	FVector2D MovementVector = Value.Get<FVector2D>();
 
+	if(DashComponent && DashComponent->IsDashing())
+		return;
+	
 	if (Controller != nullptr)
 	{
 		// find out which way is forward
@@ -174,11 +177,11 @@ void ADFM1Character::Move(const FInputActionValue& Value)
 void ADFM1Character::LeftDash()
 {
 	if(!DashComponent) return;
-	bool isDashing = DashComponent->CanDash();
+	DashComponent->DashMoving();
 }
 
 void ADFM1Character::RightDash()
 {
 	if(!DashComponent) return;
-	bool isDashing = DashComponent->CanDash();
+	DashComponent->DashMoving();
 }
