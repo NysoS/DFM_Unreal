@@ -177,11 +177,13 @@ void ADFM1Character::Move(const FInputActionValue& Value)
 void ADFM1Character::LeftDash()
 {
 	if(!DashComponent) return;
+	DashComponent->SetOrientationDash(OrientationDash::DASH_Left);
 	DashComponent->DashMoving();
 }
 
 void ADFM1Character::RightDash()
 {
 	if(!DashComponent) return;
+	DashComponent->SetOrientationDash(OrientationDash::DASH_Right);
 	DashComponent->DashMoving();
 }

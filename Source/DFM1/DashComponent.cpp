@@ -48,6 +48,9 @@ bool UDashComponent::CanDash()
 {
 	if(bDashing)
 		return false;
+
+	if(eOrientationDash == OrientationDash::DASH_None)
+		return false;
 		
 	int32 nbSphere = 6;
 	FVector Origin = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * Distance/2;
@@ -64,11 +67,16 @@ bool UDashComponent::CanDash()
 		NewPos = Origin;
 
 		float pii = GetOwner()->GetActorRotation().Yaw;
-		
-		NewPos.X += (FMath::Cos((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);
-		NewPos.Y += (FMath::Sin((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);
 
-		UE_LOG(LogTemp, Warning, TEXT("Dir X:%f Y:%f"), pii, 0);
+		if(eOrientationDash == OrientationDash::DASH_Right)
+		{
+			NewPos.X += (FMath::Cos((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);
+			NewPos.Y += (FMath::Sin((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);			
+		}else if(eOrientationDash == OrientationDash::DASH_Left)
+		{
+			NewPos.X -= (FMath::Cos((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);
+			NewPos.Y -= (FMath::Sin((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);
+		}
 		
 		FHitResult Result;
 
@@ -96,4 +104,9 @@ void UDashComponent::DashMoving()
 bool UDashComponent::IsDashing()
 {
 	return bDashing;
+}
+
+void UDashComponent::SetOrientationDash(OrientationDash orientationDash)
+{
+	eOrientationDash = orientationDash;
 }

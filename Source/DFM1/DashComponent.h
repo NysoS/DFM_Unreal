@@ -6,6 +6,12 @@
 #include "Components/ActorComponent.h"
 #include "DashComponent.generated.h"
 
+enum class OrientationDash
+{
+	DASH_None,
+	DASH_Left,
+	DASH_Right
+};
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DFM1_API UDashComponent : public UActorComponent
@@ -21,6 +27,7 @@ public:
 	
 	void DashMoving();
 	bool IsDashing();
+	void SetOrientationDash(OrientationDash orientationDash);
 	
 private:
 	UPROPERTY(EditAnywhere, Category = "Dash Parameter")
@@ -31,6 +38,8 @@ private:
 	float Time;
 
 	bool CanDash();
+	
+	OrientationDash eOrientationDash = OrientationDash::DASH_Left;
 	
 protected:
 	// Called when the game starts
