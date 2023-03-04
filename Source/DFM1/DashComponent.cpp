@@ -49,25 +49,39 @@ bool UDashComponent::CanDash()
 	if(bDashing)
 		return false;
 		
-	int32 nbSphere = 5;
-	FVector Center = GetOwner()->GetActorLocation();
+	int32 nbSphere = 6;
+	FVector Origin = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * Distance/2;
 
 	TArray<AActor*> IgnoreActors;
+
+	TArray<FVector*> ProjectionPositions;
+	FVector NewPos;
 	
-	FVector NewPos = Center + GetOwner()->GetActorForwardVector();
-	float DistanceBetweenIteration = Distance/5;
 	for(int32 i = 0; i <= nbSphere; i++)
 	{
+		float t = (float)i/(float)(nbSphere);
+		
+		NewPos = Origin;
+
+		float pii = GetOwner()->GetActorRotation().Yaw;
+		
+		NewPos.X += (FMath::Cos((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);
+		NewPos.Y += (FMath::Sin((t*PI) + (GetOwner()->GetActorRotation().Yaw/180)*PI) * Distance/2);
+
+		UE_LOG(LogTemp, Warning, TEXT("Dir X:%f Y:%f"), pii, 0);
+		
 		FHitResult Result;
-		UKismetSystemLibrary::SphereTraceSingle(GetWorld(),NewPos,NewPos,25.f,ETraceTypeQuery::TraceTypeQuery1,false,IgnoreActors,EDrawDebugTrace::ForDuration,Result,true,FLinearColor::Red,FLinearColor::Blue,5);
+
+		FLinearColor color = i==nbSphere?FLinearColor::Green:FLinearColor::Red;
+		
+		UKismetSystemLibrary::SphereTraceSingle(GetWorld(), NewPos,NewPos,25.f,ETraceTypeQuery::TraceTypeQuery1,false,IgnoreActors,EDrawDebugTrace::ForDuration,Result,true,color,FLinearColor::Blue,5);
 		if(Result.GetActor())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Hit"));
 			return false;
 		}
-		NewPos += GetOwner()->GetActorForwardVector() * DistanceBetweenIteration;
 	}
-	return true;
+	return false;
 }
 
 void UDashComponent::DashMoving()
