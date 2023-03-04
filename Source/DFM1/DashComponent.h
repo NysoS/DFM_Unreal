@@ -22,8 +22,12 @@ public:
 	// Sets default values for this component's properties
 	UDashComponent();
 
-	bool bDashing;
+	TArray<FVector*> ProjectionPositions;
+	int32 StepNextProjectionPosition = 0;
 	FVector ActorLocation;
+	
+	bool bDashing;
+	bool bNextDash = true;
 	
 	void DashMoving();
 	bool IsDashing();
@@ -34,8 +38,11 @@ private:
 	float Distance = 250.f;
 
 	UPROPERTY(EditAnywhere, Category = "Dash Parameter", meta = (ClampMin = 0.1f, ClampMax = 1.0f, UIMin = 0.1f, UIMax = 1.0f))
-	float TimeToDash;
+	float TimeToDash = 0.5f;
 	float Time;
+
+	UPROPERTY(EditAnywhere, Category = "Dash Parameter")
+	float SpeedDash = 1.f;
 
 	bool CanDash();
 	

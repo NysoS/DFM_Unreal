@@ -6,6 +6,7 @@
 #include "Components/TimelineComponent.h"
 #include "CollisionShape.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UDashComponent::UDashComponent()
@@ -31,14 +32,56 @@ void UDashComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	if(bDashing)
 	{
-		if(Time < TimeToDash)
-		{
-			Time += DeltaTime;
-			GetOwner()->SetActorLocation(FMath::Lerp(ActorLocation, ActorLocation + GetOwner()->GetActorForwardVector() * Distance, Time/TimeToDash));	
-		}else
+		const float TimeProgress = TimeToDash/ProjectionPositions.Num();
+		if(ProjectionPositions.IsEmpty())
 		{
 			bDashing = false;
-			Time = 0;
+			bNextDash = true;
+			return;	
+		}
+
+		
+		if(eOrientationDash == OrientationDash::DASH_Left)
+		{
+			if(StepNextProjectionPosition < ProjectionPositions.Num())
+			{
+				if(Time < TimeProgress)
+				{
+					Time += DeltaTime * SpeedDash;
+					GetOwner()->SetActorLocation(FMath::LerpStable(GetOwner()->GetActorLocation(),*ProjectionPositions[StepNextProjectionPosition],Time/TimeProgress));
+				}else
+				{
+					Time = 0;
+					StepNextProjectionPosition++;
+				}
+			}else
+			{
+				bDashing = false;
+				bNextDash = true;
+				eOrientationDash = OrientationDash::DASH_None;
+				StepNextProjectionPosition = 0;
+			}
+		}
+		else if(eOrientationDash == OrientationDash::DASH_Right)
+		{
+			if(StepNextProjectionPosition >= 0)
+			{
+				if(Time < TimeProgress)
+				{
+					Time += DeltaTime * SpeedDash;
+					GetOwner()->SetActorLocation(FMath::LerpStable(GetOwner()->GetActorLocation(),*ProjectionPositions[StepNextProjectionPosition],Time/TimeProgress));
+				}else
+				{
+					Time = 0;
+					StepNextProjectionPosition--;
+				}
+			}else
+			{
+				bDashing = false;
+				bNextDash = true;
+				eOrientationDash = OrientationDash::DASH_None;
+				StepNextProjectionPosition = 0;
+			}
 		}
 	}
 }
@@ -46,18 +89,20 @@ void UDashComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 bool UDashComponent::CanDash()
 {
-	if(bDashing)
+	if(!bNextDash)
 		return false;
 
 	if(eOrientationDash == OrientationDash::DASH_None)
 		return false;
-		
+
+	if(!ProjectionPositions.IsEmpty())
+		ProjectionPositions.Reset();
+	
 	int32 nbSphere = 6;
 	FVector Origin = GetOwner()->GetActorLocation() + GetOwner()->GetActorForwardVector() * Distance/2;
 
 	TArray<AActor*> IgnoreActors;
-
-	TArray<FVector*> ProjectionPositions;
+	
 	FVector NewPos;
 	
 	for(int32 i = 0; i <= nbSphere; i++)
@@ -65,8 +110,6 @@ bool UDashComponent::CanDash()
 		float t = (float)i/(float)(nbSphere);
 		
 		NewPos = Origin;
-
-		float pii = GetOwner()->GetActorRotation().Yaw;
 
 		if(eOrientationDash == OrientationDash::DASH_Right)
 		{
@@ -86,18 +129,33 @@ bool UDashComponent::CanDash()
 		if(Result.GetActor())
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Hit"));
+			ProjectionPositions.Reset();
 			return false;
 		}
+		ProjectionPositions.Push(new FVector(NewPos.X,NewPos.Y, NewPos.Z));
 	}
-	return false;
+	return true;
 }
 
 void UDashComponent::DashMoving()
 {
+	if(!bNextDash)
+		return;
+	
 	if(CanDash())
 	{
+		if(ProjectionPositions.IsEmpty())
+			return;
+		
 		ActorLocation = GetOwner()->GetActorLocation();
+		eOrientationDash==OrientationDash::DASH_Left?StepNextProjectionPosition=0:StepNextProjectionPosition=ProjectionPositions.Num()-1;
 		bDashing = true;
+		bNextDash = false;
+	}
+	else
+	{
+		if(!ProjectionPositions.IsEmpty())
+			ProjectionPositions.Reset();
 	}
 }
 
