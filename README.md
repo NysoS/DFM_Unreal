@@ -18,56 +18,56 @@ Build du projet dans le dossier build
     
   * Trapped
     ```
-    Appele la fonctione de OntakeDamage() du composant de vie (LifeComponent),
+    Appelle la fonction OntakeDamage() du composant de vie (LifeComponent),
     et appele la fonction ResetSpawn
     ```
     
   * ResetSpawn
     ```
-    Réinitialise la position du joueur à sa position d'apparition lors du lancement du niveau
+    Réinitialise la position du joueur à sa position d'apparition au lancement du niveau
     ```
     
   * AddCollectible
     ```
-    Incrémente le nombre de collectible
+    Incrémente le nombre de collectables
     ```
     
   * RemoveCollectible
     ```
-    Décrément le nombre de collectible
+    Décrémente le nombre de collectables
     ```
     
   * GetCountCollectible()
     ```
-    Retourne le nombre de collectible
+    Retourne le nombre de collectables
     ```
 
 ### LifeComponent
   
   * GetMaxLife
     ```
-    Retourne le nombre maximum de vie
+    Retourne la valeur maximum de point vie
     ```
     
   * GetLife
     ```
-    Retourne le nombre de vie
+    Retourne la valeur des points de vie actuel
     ```
     
   * OntakeDamage
     ```
-    Décrémente le nombre de vie,
-    Si le nombre de vie est à 0, on recharge le niveau
-    Sinon on appele l'événement DelegateTakeDamage en passant le nombre de vie restant  
+    Décrémente la valeur des points de vie actuel,
+    Si le nombre de vie est à 0, le niveau est réinitialisé
+    Dans le cas contraire l'événement DelegateTakeDamage est appellé avec la valeur des points de vie actuel  
     ```
 
 ### Collectible
 
   * NotifyActorBeginOverlap
     ```
-    Est appeler lorsque le joueur entre en collision avec un objet,
-    Incrément de 1 au joueur son nombre de pièce,
-    Appele l'événement DelegateTakeCollectible pour afficher la nouvelle valeur sur l'UI,
+    Est appellée lorsque le joueur entre en collision avec ce type d'objet,
+    Incrémente de 1 le nombre de pièce du joueur,
+    Appelle l'événement DelegateTakeCollectible afin d'affiché la nouvelle valeur dans l'UI,
     Détruie la pièce  
     ```
 
@@ -75,41 +75,41 @@ Build du projet dans le dossier build
 
   * NotifyActorBeginOverlap
     ```
-    Vérifie si l'object qui rentre en collision avec lui est le joueur,
-    Si c'est le joueur, on appele la fonction Trapped du joueur
+    Vérifie si l'object entrant en collision est le joueur,
+    Si c'est le cas, la fonction Trapped du joueur est appllée
     ```
 
 ### EndingZone
 
   * NotifyActorBeginOverlap
     ```
-    Vérifie si l'object qui rentre en collision avec lui est le joueur,
+    Vérifie si l'object entrant en collision est le joueur,
     Si le joueur a collecté toutes les pièces du niveau,
-    On appele l'événement 'DelegateEndGame' de fin de niveau
+    L'événement 'DelegateEndGame' de fin de niveau est appellé
     ```
 
 ### WBP_Life
 
   * Event Pre Construct
     ```
-    S'abonne à l'événement TakeDamage du composant 'LifeComponent',
-    Appele la fonction RemoveLife, lorsque l'événement TakeDamage est appelée
+    Abonner à l'événement TakeDamage du composant 'LifeComponent',
+    Appelle la fonction RemoveLife, lorsque l'événement TakeDamage est déclenché
     ```
     
   * Event Construct
     ```
-    Récupère le nombre de vie maximum, 
-    Appele la fonction DrawLife
+    Récupère la valeur de points de vie maximum, 
+    Appelle la fonction DrawLife
     ```
     
   * DrawLife
     ```
-    Affiche le nombre de vie sur l'UI
+    Affiche la valeur du nombre de points de vie dans l'UI
     ```
     
   * RemoveLife
     ```
-    Retire une vie sur l'UI
+    Retire un point de vie dans l'UI
     ```
 
 ### UICollectible
@@ -122,50 +122,50 @@ Build du projet dans le dossier build
     
   * OnTakeCollectible
     ```
-    Incrément le nombre de collectible,
-    Affiche le nombre de collectible sur l'UI
+    Incrémente la valeur le nombre de collectables récupérés,
+    Affiche la valeur du nombre de collectables récupérés dans l'UI
     ```
 
 - - - - 
 
-## Partie 2 - Dash circulaire
+## Partie 2 - Dash semi-circulaire
 
 ### DFM1Character
 
   * LeftDash
     ```
-    Effectue le dash circulaire vert la gauche
+    Effectue un dash semi-circulaire vers la gauche
     ```
     
   * RightDash
     ```
-    Effectue le dash circulaire vert la droite
+    Effectue un dash semi-circulaire vers la droite
     ```
 
 ### DashComponent
 
   * DashMoving
     ```
-    Configure la l'orientation du dash et lance le mouvement du dash,
+    Etablie l'orientation du dash et éxecute le mouvement du personnage,
     Si la projection du dash a detectée aucun obstacle
     ```
     
   * CanDash
     ```
-    Project le mouvement du dash de facon circulaire
-    Si il y a un obstacle sur la trajectoire on annule le dash
-    Retourne true, si aucun obstacle a été détecté
+    Calcul le mouvement du dash de facon semi-circulaire
+    Au contact d'un obstacle, la trajectoire dash est annulé
+    La valeur true est retournée, si aucun obstacle n'a été détecté
     ```
     
   * DashProgress
     ```
-    Effectue le mouvement du dash a chaque frame, selon l'orientation du dash
-    Le personnage se déplace sur chaque position projeter selon une vitesse définie/le nombre de position projeter
+    Effectue le mouvement du dash à chaque frame,
+    Le personnage est déplacé sur chaque position calculée avec sa vitesse définie
     ```
     
   * DashReset
     ```
-    Réinitialise la configuration du mouvement du dash
+    Réinitialise le calcul du dash
     ```
     
   * IsDashing
@@ -175,10 +175,10 @@ Build du projet dans le dossier build
     
   * SetOrientationDash
     ```
-    Configure l'orientation du dash
+    Etablie l'orientation du dash
     ```
     
   * TickComponent
     ```
-    On appele les fonction 'DashProgress' et 'DashReset'
+    Les fonctions 'DashProgress' et 'DashReset' sont appellées
     ```
