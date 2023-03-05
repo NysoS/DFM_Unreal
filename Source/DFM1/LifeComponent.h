@@ -14,7 +14,7 @@ class DFM1_API ULifeComponent : public UActorComponent
 	GENERATED_BODY()
 
 private:
-	UPROPERTY(EditAnywhere, Category = "Life")
+	UPROPERTY(EditAnywhere, Category = "Life", meta = (ClampMin = 1, ClampMax = 10, UIMin = 1, UIMax = 10))
 	int32 MaxLife;
 	int32 Life;
 	

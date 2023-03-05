@@ -52,6 +52,7 @@ void AEndingZone::NotifyActorBeginOverlap(AActor* OtherActor)
 		if(Character->GetCountCollectible() == TotalCoinsToUnlock)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Congratulation you have finish this game!!"));
+			DelegateEndGame.Broadcast();
 		}else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Sorry bro, you don't have enough coins!! Come back later"));
