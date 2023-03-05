@@ -1,5 +1,7 @@
 # DFM_Unreal
 
+Build du projet dans le dossier build
+
 ## Partie 1
 
 ### DFM1Character
