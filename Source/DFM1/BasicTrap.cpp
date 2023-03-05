@@ -19,7 +19,7 @@ ABasicTrap::ABasicTrap()
 	BoxComponent->SetupAttachment(StaticMesh);
 	
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 }
 
@@ -46,10 +46,8 @@ void ABasicTrap::NotifyActorBeginOverlap(AActor* OtherActor)
 	Super::NotifyActorBeginOverlap(OtherActor);
 	if(!OtherActor) return;
 
-	if(Cast<ACharacter>(OtherActor))
+	if(ADFM1Character* Character = Cast<ADFM1Character>(OtherActor))
 	{
-		ADFM1Character* Character = Cast<ADFM1Character>(OtherActor);
-		if(!Character) return;
 		Character->Trapped();
 	}
 }

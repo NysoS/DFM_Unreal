@@ -42,6 +42,9 @@ bool UUICollectible::Initialize()
 	return init;
 }
 
+/*
+ * Affiche le nombre de pièce récupérée
+ */
 void UUICollectible::OnTakeCollectible(int32 nbCollectible)
 {
 	if(!CollectibleText) return;

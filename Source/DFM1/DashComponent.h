@@ -24,10 +24,6 @@ public:
 
 	TArray<FVector*> ProjectionPositions;
 	int32 StepNextProjectionPosition = 0;
-	FVector ActorLocation;
-	
-	bool bDashing;
-	bool bNextDash = true;
 	
 	void DashMoving();
 	bool IsDashing();
@@ -44,8 +40,12 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Dash Parameter")
 	float SpeedDash = 1.f;
 
-	bool CanDash();
+	bool bDashing;
+	bool bNextDash = true;
 	
+	bool CanDash();
+	void DashProgress(float deltaTime);
+	void DashReset();
 	OrientationDash eOrientationDash = OrientationDash::DASH_Left;
 	
 protected:

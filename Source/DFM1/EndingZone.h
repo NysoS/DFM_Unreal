@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "EndingZone.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FMulticastDelegateEndGame);
+
 UCLASS()
 class DFM1_API AEndingZone : public AActor
 {
@@ -16,12 +18,15 @@ class DFM1_API AEndingZone : public AActor
 	
 	UPROPERTY(EditAnywhere, Category = "Mesh")
 	UStaticMeshComponent* MeshComponent;
-
+	
 	int32 TotalCoinsToUnlock = 0;
 	
 public:	
 	// Sets default values for this actor's properties
 	AEndingZone();
+
+	UPROPERTY(BlueprintAssignable, Category = "Custom Delegate")
+	FMulticastDelegateEndGame DelegateEndGame;
 
 protected:
 	// Called when the game starts or when spawned
@@ -30,5 +35,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	// Called when actor overlap other one
 	virtual void NotifyActorBeginOverlap (AActor * OtherActor) override;
 };

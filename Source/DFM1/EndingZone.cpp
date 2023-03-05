@@ -12,7 +12,7 @@
 AEndingZone::AEndingZone()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>(TEXT("Trigger Zone"));
 	RootComponent = BoxComponent;
@@ -52,6 +52,7 @@ void AEndingZone::NotifyActorBeginOverlap(AActor* OtherActor)
 		if(Character->GetCountCollectible() == TotalCoinsToUnlock)
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Congratulation you have finish this game!!"));
+			DelegateEndGame.Broadcast();
 		}else
 		{
 			UE_LOG(LogTemp, Warning, TEXT("Sorry bro, you don't have enough coins!! Come back later"));

@@ -68,7 +68,8 @@ void ADFM1Character::BeginPlay()
 			Subsystem->AddMappingContext(DefaultMappingContext, 0);
 		}
 	}
-	
+
+	//Reupération du component Life
 	LifeComponent = FindComponentByClass<ULifeComponent>();
 	if(!LifeComponent)
 	{
@@ -76,6 +77,7 @@ void ADFM1Character::BeginPlay()
 		UE_LOG(LogTemp, Error, TEXT("Life Component Not found"));
 	}
 
+	//Reupération du component Dash
 	DashComponent = FindComponentByClass<UDashComponent>();
 	if(!DashComponent)
 	{
@@ -92,16 +94,25 @@ void ADFM1Character::Tick(float DeltaSeconds)
 	CameraBoom->TargetArmLength = (CameraOffset.Z - GetActorLocation().Z) + CameraDistance;
 }
 
+/*
+ *	Reinitialise la position du personnage, à la position de départ  
+ */
 void ADFM1Character::ResetSpawn()
 {
 	SetActorLocation(StartPosition);
 }
 
+/*
+ * Incrémente le nombre de collectible
+ */
 void ADFM1Character::AddCollectible(int32 nbCollectible)
 {
 	NbCollectible += nbCollectible;
 }
 
+/*
+ * Décremente le nombre de collectible
+ */
 void ADFM1Character::RemoveCollectible(int32 nbCollectible)
 {
 	NbCollectible -= nbCollectible;
@@ -116,11 +127,17 @@ int32 ADFM1Character::GetCountCollectible() const
 	return NbCollectible;
 }
 
+/*
+ * Fonction de callback, lorsque le personnage tombe dans le vide
+ */
 void ADFM1Character::FellOutOfWorld(const UDamageType& dmgType)
 {
 	Trapped();
 }
 
+/*
+ * Applique un dégat au personnage et reinitialise la position du personnage
+ */
 void ADFM1Character::Trapped()
 {
 	if(!LifeComponent) return;
@@ -174,6 +191,9 @@ void ADFM1Character::Move(const FInputActionValue& Value)
 	}
 }
 
+/*
+ * Effectue le dash circulaire vert la gauche
+ */
 void ADFM1Character::LeftDash()
 {
 	if(!DashComponent) return;
@@ -181,6 +201,9 @@ void ADFM1Character::LeftDash()
 	DashComponent->DashMoving();
 }
 
+/*
+ * Effectue le dash circulaire vert la droite
+ */
 void ADFM1Character::RightDash()
 {
 	if(!DashComponent) return;
