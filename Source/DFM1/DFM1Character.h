@@ -25,9 +25,11 @@ class ADFM1Character : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputMappingContext* DefaultMappingContext;
 
-	/** Jump Input Action */
+	/** Dash Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
-	class UInputAction* JumpAction;
+	class UInputAction* DashLeftAction;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
+	class UInputAction* DashRightAction;
 
 	/** Move Input Action */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
@@ -37,17 +39,32 @@ class ADFM1Character : public ACharacter
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = Input, meta = (AllowPrivateAccess = "true"))
 	class UInputAction* LookAction;
 
+	FVector CameraOffset;
+
+	UPROPERTY(EditAnywhere, Category = "Camera")
+	float CameraDistance = 600.f;
+
+	class ULifeComponent* LifeComponent;
+
+	class UDashComponent* DashComponent;
+
+	void LeftDash();
+	void RightDash();
+	
+	FVector StartPosition;
+
+	UPROPERTY(EditAnywhere, Category = "Collectible");
+	int32 NbCollectible = 0;
+	
 public:
 	ADFM1Character();
-	
 
+	void Trapped();
+	
 protected:
 
 	/** Called for movement input */
 	void Move(const FInputActionValue& Value);
-
-	/** Called for looking input */
-	void Look(const FInputActionValue& Value);
 			
 
 protected:
@@ -57,10 +74,20 @@ protected:
 	// To add mapping context
 	virtual void BeginPlay();
 
+	virtual void Tick(float DeltaSeconds) override;
+
+	virtual void FellOutOfWorld(const UDamageType& dmgType) override;
+
 public:
 	/** Returns CameraBoom subobject **/
 	FORCEINLINE class USpringArmComponent* GetCameraBoom() const { return CameraBoom; }
 	/** Returns FollowCamera subobject **/
 	FORCEINLINE class UCameraComponent* GetFollowCamera() const { return FollowCamera; }
+
+	void ResetSpawn();
+
+	void AddCollectible(int32 nbCollectible);
+	void RemoveCollectible(int32 nbCollectible);
+	int32 GetCountCollectible() const;
 };
 
