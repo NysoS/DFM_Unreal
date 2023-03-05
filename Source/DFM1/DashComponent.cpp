@@ -3,8 +3,6 @@
 #include "DashComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Math/UnrealMathUtility.h"
-#include "Components/TimelineComponent.h"
-#include "CollisionShape.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -24,7 +22,6 @@ void UDashComponent::BeginPlay()
 	Super::BeginPlay();
 }
 
-
 // Called every frame
 void UDashComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
@@ -32,7 +29,6 @@ void UDashComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 
 	if(bDashing)
 	{
-		const float TimeProgress = TimeToDash/ProjectionPositions.Num();
 		if(ProjectionPositions.IsEmpty())
 		{
 			bDashing = false;
@@ -45,48 +41,30 @@ void UDashComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorC
 		{
 			if(StepNextProjectionPosition < ProjectionPositions.Num())
 			{
-				if(Time < TimeProgress)
-				{
-					Time += DeltaTime * SpeedDash;
-					GetOwner()->SetActorLocation(FMath::LerpStable(GetOwner()->GetActorLocation(),*ProjectionPositions[StepNextProjectionPosition],Time/TimeProgress));
-				}else
-				{
-					Time = 0;
-					StepNextProjectionPosition++;
-				}
-			}else
+				DashProgress(DeltaTime);
+			}
+			else
 			{
-				bDashing = false;
-				bNextDash = true;
-				eOrientationDash = OrientationDash::DASH_None;
-				StepNextProjectionPosition = 0;
+				DashReset();
 			}
 		}
 		else if(eOrientationDash == OrientationDash::DASH_Right)
 		{
 			if(StepNextProjectionPosition >= 0)
 			{
-				if(Time < TimeProgress)
-				{
-					Time += DeltaTime * SpeedDash;
-					GetOwner()->SetActorLocation(FMath::LerpStable(GetOwner()->GetActorLocation(),*ProjectionPositions[StepNextProjectionPosition],Time/TimeProgress));
-				}else
-				{
-					Time = 0;
-					StepNextProjectionPosition--;
-				}
-			}else
+				DashProgress(DeltaTime);
+			}
+			else
 			{
-				bDashing = false;
-				bNextDash = true;
-				eOrientationDash = OrientationDash::DASH_None;
-				StepNextProjectionPosition = 0;
+				DashReset();
 			}
 		}
 	}
 }
 
-
+//Project le mouvement du dash circulaire
+//Si il y a un obstacle on annule le dash
+//Retourne true, si aucun obstacle a été touché
 bool UDashComponent::CanDash()
 {
 	if(!bNextDash)
@@ -123,12 +101,12 @@ bool UDashComponent::CanDash()
 		
 		FHitResult Result;
 
-		FLinearColor color = i==nbSphere?FLinearColor::Green:FLinearColor::Red;
-		
-		UKismetSystemLibrary::SphereTraceSingle(GetWorld(), NewPos,NewPos,25.f,ETraceTypeQuery::TraceTypeQuery1,false,IgnoreActors,EDrawDebugTrace::ForDuration,Result,true,color,FLinearColor::Blue,5);
+		FLinearColor colorDebug = i==nbSphere?FLinearColor::Green:FLinearColor::Red;
+
+		//Affiche une sphère de debug sur chaque position projeter du dash
+		UKismetSystemLibrary::SphereTraceSingle(GetWorld(), NewPos,NewPos,25.f,ETraceTypeQuery::TraceTypeQuery1,false,IgnoreActors,EDrawDebugTrace::ForDuration,Result,true,colorDebug,FLinearColor::Blue,5);
 		if(Result.GetActor())
 		{
-			UE_LOG(LogTemp, Warning, TEXT("Hit"));
 			ProjectionPositions.Reset();
 			return false;
 		}
@@ -137,6 +115,9 @@ bool UDashComponent::CanDash()
 	return true;
 }
 
+/**
+ * Configure la l'orientation du dash et lance le mouvement du dash, si la projection du dash a detectée aucun obstacle
+ */
 void UDashComponent::DashMoving()
 {
 	if(!bNextDash)
@@ -147,7 +128,6 @@ void UDashComponent::DashMoving()
 		if(ProjectionPositions.IsEmpty())
 			return;
 		
-		ActorLocation = GetOwner()->GetActorLocation();
 		eOrientationDash==OrientationDash::DASH_Left?StepNextProjectionPosition=0:StepNextProjectionPosition=ProjectionPositions.Num()-1;
 		bDashing = true;
 		bNextDash = false;
@@ -157,6 +137,35 @@ void UDashComponent::DashMoving()
 		if(!ProjectionPositions.IsEmpty())
 			ProjectionPositions.Reset();
 	}
+}
+
+/**
+* Effectue le mouvement du dash a chaque frame, selon l'orientation du dash
+* Le personnage se déplace sur chaque position projeter selon une vitesse définie/le nombre de position projeter
+*/
+void UDashComponent::DashProgress(float deltaTime)
+{
+	const float TimeProgress = TimeToDash/ProjectionPositions.Num();
+	if(Time < TimeProgress)
+	{
+		Time += deltaTime * SpeedDash;
+		GetOwner()->SetActorLocation(FMath::LerpStable(GetOwner()->GetActorLocation(),*ProjectionPositions[StepNextProjectionPosition],Time/TimeProgress));
+	}else
+	{
+		Time = 0;
+		eOrientationDash==OrientationDash::DASH_Left?StepNextProjectionPosition++:StepNextProjectionPosition--;
+	}
+}
+
+/**
+ * Réinitialise la configuration du mouvement du dash
+ */
+void UDashComponent::DashReset()
+{
+	bDashing = false;
+	bNextDash = true;
+	eOrientationDash = OrientationDash::DASH_None;
+	StepNextProjectionPosition = 0;
 }
 
 bool UDashComponent::IsDashing()

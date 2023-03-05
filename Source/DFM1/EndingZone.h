@@ -30,5 +30,6 @@ protected:
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+	// Called when actor overlap other one
 	virtual void NotifyActorBeginOverlap (AActor * OtherActor) override;
 };
